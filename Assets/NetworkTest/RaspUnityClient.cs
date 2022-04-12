@@ -41,7 +41,7 @@ public class RaspUnityClient : MonoBehaviour {
             client = new TcpClient(host, port);         //Initialize client with host ip address (string) and port number (int)
             s = client.GetStream();                     //Initiate Socket steam
             //byte[] byteBuffer = Encoding.UTF8.GetBytes("Connected to client");  //Encode string message to be sent to host 
-            byte[] byteBuffer = new byte[] {127, 0, 0, 11, 0, 0};        //Use this format to send raw bytes
+            byte[] byteBuffer = new byte[] {255, 255, 255, 255, 255, 255};        //Use this format to send raw bytes. Initialize with each byte  set to 255
             //byte[] byteBuffer = Encoding.UTF8.GetBytes("127, 0, 0, 0, 0, 0");     //Use this format to send bytes encoded as a string
             s.Write(byteBuffer, 0, byteBuffer.Length);      //Send message to host by writing to the stream in format: s.Write(byteArrayToSend, ArrayStartIndex, NumBytesToSend)
             while (true) {          //create loop to continuously receive data

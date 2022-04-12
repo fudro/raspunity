@@ -8,22 +8,22 @@ using Debug = UnityEngine.Debug;    //System.Diagnostics and UnityEngine both us
 
 public class ButtonSend : MonoBehaviour
 {
-    public GameObject cube;
-    [SerializeField]
-    //private string command;       //Declare string variable if the field accepts bytes as a string
-    private byte[] buttonBuffer;    //Serialize field in editor for a 6 element byte array
+    public GameObject robot;
+    [SerializeField]                //Use [Serialize Field] to create editable fields within the editor.
+    //private string command;       //Declare a string variable if the field accepts bytes as a string
+    private byte[] buttonBuffer;    //Declare a byte array if the field accepts individual values for each byte. This elements of the array must be assigned here, at Start, or within the editor.
     private bool buttonState;       //Create flag to track state of button (press once to activate, press again to deactivate)
-    RaspUnityClient client;
+    RaspUnityClient client;         //Creat a reference to the communication client script on the robot object
 
 
     // Start is called before the first frame update
     void Start()
     {
-        buttonState = false;
-        client = cube.GetComponent<RaspUnityClient>();
+        buttonState = false;        //Initialize with button "not activated"
+        client = robot.GetComponent<RaspUnityClient>();
 
-        //command = "127, 0, 0, 0, 0, 0";
-        //buttonBuffer = new byte[] { 10, 0, 0, 69, 0, 0 };
+        //command = "127, 0, 0, 0, 0, 0";                       //used to send data as a string
+        //buttonBuffer = new byte[] { 10, 0, 0, 69, 0, 0 };     //Used to send data as an array of bytes. Can also be defined in the sending function.
     }
 
     // Update is called once per frame
@@ -36,15 +36,15 @@ public class ButtonSend : MonoBehaviour
     {
         //byte[] buttonBuffer = new byte[] { 10, 0, 0, 69, 0, 0 };        //Use this format to send raw bytes
         //byte[] buttonBuffer = Encoding.UTF8.GetBytes(command);          //Use this format to encode message as string
-        client.s.Write(buttonBuffer, 0, buttonBuffer.Length);
+        client.s.Write(buttonBuffer, 0, buttonBuffer.Length);           //"buttonBuffer" must be defined for each specific Button using the fields in the editor.
     }
 
-    public void toggleGStreamer()
+    public void toggleGStreamer()       //A specific Button is hardcoded in Unity editor to send command to start gStreamer
     {
         if (buttonState == false)
         {
-            client.s.Write(buttonBuffer, 0, buttonBuffer.Length);       //Send command to Raspberry Pi. Button is hardcoded in Unity editor to send command to start gStreamer
-            System.Diagnostics.Process.Start("C:/Users/fudro/Desktop/rpi_gstream.bat");     //Run a batch file to start gStreamer from Unity
+            client.s.Write(buttonBuffer, 0, buttonBuffer.Length);       //Send command to Raspberry Pi.
+            System.Diagnostics.Process.Start("C:/Users/fudro/Desktop/rpi_gstream.bat");     //Run a batch file to start gStreamer from Unity. MUST match the actual location of the batch file.
 
             buttonState = true;
             Debug.Log("button ON!");

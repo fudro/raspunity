@@ -87,7 +87,7 @@ public class ButtonSend : MonoBehaviour
         Debug.Log(panel.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text);
         for (int i = 1; i < panelChildren; i++)     //Start at index 1 to skip the button element at index zero.
         {
-            if(panel.transform.GetChild(i).gameObject.name == "RadioButton")        //Check if the element is a radio buttton
+            if(panel.transform.GetChild(i).gameObject.name.Contains("RadioButton"))        //Check if the element is a radio buttton
             {
                 if(panel.transform.GetChild(i).gameObject.transform.GetChild(1).gameObject.GetComponent<Toggle>().isOn) //Check index 1 (first toggle) of radiobutton group (RadioButton label is index 0)
                 {

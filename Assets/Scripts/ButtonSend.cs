@@ -9,7 +9,7 @@ using Debug = UnityEngine.Debug;    //System.Diagnostics and UnityEngine both us
 
 public class ButtonSend : MonoBehaviour
 {
-    //public GameObject robot;        //Create a reference for the virtual robot object in the scene
+    public GameObject robot;        //Create a reference for the virtual robot object in the scene
     //[SerializeField]                //Use [Serialize Field] to create editable fields within the editor.
     private byte[] buttonBuffer;    //Declare a byte array for the individual values for each byte. This elements of the array must be assigned here, at Start, or within the editor.
     private Transform panel;        //Create a reference for the attached button's parent panel
@@ -36,7 +36,7 @@ public class ButtonSend : MonoBehaviour
                                                     { "Lidar",          142 } };
         messageLength = 6;          //The number of bytes to send per command
         buttonState = false;        //Initialize with button "not activated"
-        //client = robot.GetComponent<RaspUnityClient>();
+        client = robot.GetComponent<RaspUnityClient>();
 
         panel = this.transform.parent;      //Assign panel
         //getPanelValues();
@@ -84,7 +84,6 @@ public class ButtonSend : MonoBehaviour
         //Update panel values for the associated command. 
         int panelChildren = panel.transform.childCount;
         panelBuffer[0] = (byte)commandList[panel.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text];      //Assign command ID based on name of button
-        Debug.Log(panel.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text);
         for (int i = 1; i < panelChildren; i++)     //Start at index 1 to skip the button element at index zero.
         {
             if(panel.transform.GetChild(i).gameObject.name.Contains("RadioButton"))        //Check if the element is a radio buttton
@@ -101,17 +100,19 @@ public class ButtonSend : MonoBehaviour
             if(panel.transform.GetChild(i).gameObject.name == "Slider")        //Check if the element is a Slider
             {
                 panelBuffer[i] = (byte)panel.transform.GetChild(i).gameObject.GetComponent<Slider>().value;
-                Debug.Log("Slider found!");
             }
         }
-        Debug.Log(panelBuffer[0]);
-        Debug.Log(panelBuffer[1]);
-        Debug.Log(panelBuffer[2]);
-        Debug.Log(panelBuffer[3]);
-        Debug.Log(panelBuffer[4]);
-        Debug.Log(panelBuffer[5]);
+        //Display command name and the command parameters
+        Debug.Log(panel.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text + ": " +
+            panelBuffer[0] + ", " + 
+            panelBuffer[1] + ", " + 
+            panelBuffer[2] + ", " + 
+            panelBuffer[3] + ", " + 
+            panelBuffer[4] + ", " + 
+            panelBuffer[5]
+        );
 
-        //client.s.Write(panelBuffer, 0, panelBuffer.Length);           //"panelBuffer" must be defined for each specific Button using the fields in the editor.
+        client.s.Write(panelBuffer, 0, panelBuffer.Length);           //send command to robot
     }
 
     public void toggleGStreamer()       //A specific Button is hardcoded in Unity editor to send command to start gStreamer

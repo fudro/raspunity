@@ -40,21 +40,21 @@ public class RaspUnityClient : MonoBehaviour {
         try {
             client = new TcpClient(host, port);         //Initialize client with host ip address (string) and port number (int)
             s = client.GetStream();                     //Initiate Socket steam
-            //byte[] byteBuffer = Encoding.UTF8.GetBytes("Connected to client");  //Encode string message to be sent to host 
-            byte[] byteBuffer = new byte[] {255, 255, 255, 255, 255, 255};        //Use this format to send raw bytes. Initialize with each byte  set to 255
-            //byte[] byteBuffer = Encoding.UTF8.GetBytes("127, 0, 0, 0, 0, 0");     //Use this format to send bytes encoded as a string
+//byte[] byteBuffer = Encoding.UTF8.GetBytes("Connected to client");  //Encode string message to be sent to host 
+            byte[] byteBuffer = new byte[] {255, 255, 255, 255, 255, 255};        //Use this format to send raw bytes. Initialize with each byte set to 255
+//byte[] byteBuffer = Encoding.UTF8.GetBytes("127, 0, 0, 0, 0, 0");     //Use this format to send bytes encoded as a string
             s.Write(byteBuffer, 0, byteBuffer.Length);      //Send message to host by writing to the stream in format: s.Write(byteArrayToSend, ArrayStartIndex, NumBytesToSend)
             while (true) {          //create loop to continuously receive data
                 byte[] buffer = new byte[client.ReceiveBufferSize];     //Create byte array to hold received data
 
                 int bytesRead = s.Read(buffer, 0, client.ReceiveBufferSize);            //Store the number of bytes received from the stream - returned by s.Read()
-                Debug.Log(bytesRead);       //display the number of bytes received
+//Debug.Log(bytesRead);       //display the number of bytes received
                 if (bytesRead <= 0)         //If no bytes received or if data is invalid...break loop
                 {
                     Debug.Log("No Data Received!");
                     break;
                 }
-                //string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);    //Ohterwise... decode the bytes as a string
+                //string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);    //If bytes received... decode the bytes as a string
                 //Debug.Log(dataReceived);        //display the decoded string
                 byte[] array = buffer.SubArray(0, 6);       //Create subarray of received buffer to only include the first 6 bytes
                 Debug.Log(BitConverter.ToString(array));        //Display the received data as bytes separated by dashes
